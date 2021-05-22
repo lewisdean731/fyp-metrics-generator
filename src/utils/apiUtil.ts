@@ -55,5 +55,3 @@ export const createMetricEntry = async (
     }
   )
 }
-
-export default getAllProjectIds;

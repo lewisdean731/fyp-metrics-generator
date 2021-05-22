@@ -1,4 +1,4 @@
-import getAllProjectIds, { asyncGetRequest } from "./apiUtil";
+import * as apiHelper from "./apiUtil";
 import axios from "axios";
 
 jest.mock("axios");
@@ -15,7 +15,7 @@ describe("asyncGetRequest", () => {
       })
     );
 
-    await asyncGetRequest("fakeUrl").then((response) =>
+    await apiHelper.asyncGetRequest("fakeUrl").then((response) =>
       expect(response.status).toEqual(200)
     );
   });
@@ -27,9 +27,26 @@ describe("asyncGetRequest", () => {
       })
     );
 
-    await asyncGetRequest("fakeUrl").catch((error) =>
+    await apiHelper.asyncGetRequest("fakeUrl").catch((error) =>
       expect(error.status).toEqual(401)
     );
+  });
+});
+
+describe("asyncPutRequest", () => {
+  test("should return a 200 when authorised and data OK", async () => {
+    mockedAxios.put.mockImplementation(() => Promise.resolve({ status: 200 }));
+
+    apiHelper
+      .asyncPutRequest("api/fakeurl", { data: "data" })
+      .then((response) => expect(response.status).toBe(200));
+  });
+  test("should throw a 401 when unauthorised / no auth given", async () => {
+    mockedAxios.put.mockImplementation(() => Promise.reject({ status: 401 }));
+
+    apiHelper
+      .asyncPutRequest("api/fakeurl", { data: "data" })
+      .catch((error) => expect(error.status).toBe(401));
   });
 });
 
@@ -43,15 +60,43 @@ describe("getAllProjectIds", () => {
       })
     );
 
-    const data = await getAllProjectIds();
+    const data = await apiHelper.getAllProjectIds();
     expect(data).toEqual({ projectIds: ["1234", "5678"] });
   });
 
   test("throws an error when there is an issue getting the IDs", async () => {
     mockedAxios.get.mockImplementation(() => Promise.reject("Server error"));
 
-    await getAllProjectIds().catch((error) =>
+    await apiHelper.getAllProjectIds().catch((error) =>
       expect(error).toMatchObject(new Error("Server error"))
     );
+  });
+});
+
+describe("createMetricEntry", () => {
+  test("should return a 200 on notification created successfully", async () => {
+    mockedAxios.put.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+      })
+    );
+
+    await apiHelper.createMetricEntry("uid", "metricA", 0, 0)
+      .then((response) => expect(response.status).toBe(200));
+  });
+
+  test("throws an error when notification not created", async () => {
+    mockedAxios.put.mockImplementation(() =>
+      Promise.reject({
+        status: 500,
+        message: "example error occured",
+      })
+    );
+
+    await apiHelper.createMetricEntry("uid", "metricA", 0, 0)
+    .catch((error) => {
+      expect(error.status).toBe(500);
+      expect(error.message).toBe("example error occured");
+    });
   });
 });
