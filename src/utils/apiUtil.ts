@@ -13,6 +13,20 @@ export const asyncGetRequest = async (
     });
 };
 
+export const asyncPutRequest = async (
+  url: string,
+  data: object
+): Promise<AxiosResponse> => {
+  return await axios
+    .put(url, data, { params: { apiKey: fetchEnvVar("API_KEY") } })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 export const getAllProjectIds = async (): Promise<{ projectIds: string[] }> => {
   return await asyncGetRequest(
     `${fetchEnvVar("API_ENDPOINT")}/getAllProjectIds`
