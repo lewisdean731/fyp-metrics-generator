@@ -27,9 +27,9 @@ export const asyncPutRequest = async (
     });
 };
 
-export const getAllProjectIds = async (): Promise<{ projectIds: string[] }> => {
+export const getAllUserIds = async (): Promise<{ userIds: string[] }> => {
   return await asyncGetRequest(
-    `${fetchEnvVar("API_ENDPOINT")}/getAllProjectIds`
+    `${fetchEnvVar("API_ENDPOINT")}/getAllUserIds`
   )
     .then((response) => {
       return response.data;

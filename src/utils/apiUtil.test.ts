@@ -55,19 +55,19 @@ describe("getAllProjectIds", () => {
     mockedAxios.get.mockImplementation(() =>
       Promise.resolve({
         data: {
-          projectIds: ["1234", "5678"],
+          userIds: ["1234", "5678"],
         },
       })
     );
 
-    const data = await apiHelper.getAllProjectIds();
-    expect(data).toEqual({ projectIds: ["1234", "5678"] });
+    const data = await apiHelper.getAllUserIds();
+    expect(data).toEqual({ userIds: ["1234", "5678"] });
   });
 
   test("throws an error when there is an issue getting the IDs", async () => {
     mockedAxios.get.mockImplementation(() => Promise.reject("Server error"));
 
-    await apiHelper.getAllProjectIds().catch((error) =>
+    await apiHelper.getAllUserIds().catch((error) =>
       expect(error).toMatchObject(new Error("Server error"))
     );
   });
