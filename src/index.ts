@@ -53,7 +53,7 @@ const toVersionIntArray = (version: string): number[] => {
       // Get all projects for user then for each one
       const projects: Project[] = await apiUtil.getAllProjectsForUser(uid)
       projects.forEach((project) => {
-        project.dependencies.directDependencies.forEach((dependency) => {
+        project.projectDependencies.directDependencies.forEach((dependency) => {
           // Add dependencies to total / green / yellow / red tallies
           const dateDiff = howOutOfDate(dependency.next_release_date);
           
@@ -72,6 +72,7 @@ const toVersionIntArray = (version: string): number[] => {
         });
       });
       // update metrics with tally amounts
+      console.log(`Updating metrics for user ${uid}`)
       await apiUtil.createMetricEntry(
         uid, 
         "totalDependencies",

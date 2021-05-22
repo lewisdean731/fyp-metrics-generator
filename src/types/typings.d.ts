@@ -1,5 +1,5 @@
 type Project = {
-  dependencies: {
+  projectDependencies: {
     directDependencies: dependency[];
   }
   yellowWarningPeriod: number;
