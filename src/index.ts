@@ -41,17 +41,64 @@ const toVersionIntArray = (version: string): number[] => {
 
 (async () => {
   while (true) {
-    await getAllProjectIds()
-      .then(async (data) => {
-        console.log(JSON.stringify(data));
-        data.projectIds.forEach(async (id) => {
-          console.log(`Publishing message for project ${id}`);
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
 
+    // Get all users then for each one
+    const userIds: string[] = await apiUtil.getAllUserIds()
+    userIds.forEach(async(uid) => {
+      let totalDependencies: number = 0;
+      let greenDependencies: number = 0;
+      let yellowDependencies: number = 0;
+      let redDependencies: number = 0;
+
+      // Get all projects for user then for each one
+      const projects: Project[] = await apiUtil.getAllProjectsForUser(uid)
+      projects.forEach((project) => {
+        project.dependencies.directDependencies.forEach((dependency) => {
+          // Add dependencies to total / green / yellow / red tallies
+          const dateDiff = howOutOfDate(dependency.next_release_date);
+          
+          totalDependencies++;
+
+          switch (true) {
+            case isUsingLatestVersion(dependency):
+              greenDependencies++;
+              break;
+            case dateDiff > project.redWarningPeriod:
+              redDependencies++;
+              break;
+            case dateDiff > project.yellowWarningPeriod:
+              yellowDependencies++;
+          };
+        });
+      });
+      // update metrics with tally amounts
+      await apiUtil.createMetricEntry(
+        uid, 
+        "totalDependencies",
+        new Date().getTime(),
+        totalDependencies
+      )
+      await apiUtil.createMetricEntry(
+        uid, 
+        "greenDependencies",
+        new Date().getTime(),
+        greenDependencies
+      )
+      await apiUtil.createMetricEntry(
+        uid, 
+        "yellowDependencies",
+        new Date().getTime(),
+        yellowDependencies
+      )
+      await apiUtil.createMetricEntry(
+        uid, 
+        "redDependencies",
+        new Date().getTime(),
+        redDependencies
+      )
+    });
+    
+    // wait x seconds
     await delay(RUN_DELAY_SECONDS);
   }
 })().catch((error) => {
