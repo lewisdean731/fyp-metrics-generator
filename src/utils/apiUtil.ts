@@ -27,12 +27,12 @@ export const asyncPutRequest = async (
     });
 };
 
-export const getAllUserIds = async (): Promise<{ userIds: string[] }> => {
+export const getAllUserIds = async (): Promise<string[]> => {
   return await asyncGetRequest(
     `${fetchEnvVar("API_ENDPOINT")}/getAllUserIds`
   )
     .then((response) => {
-      return response.data;
+      return response.data.userIds;
     })
     .catch((error) => {
       console.log(error.message);
@@ -40,12 +40,12 @@ export const getAllUserIds = async (): Promise<{ userIds: string[] }> => {
     });
 };
 
-export const getAllProjectsForUser = async (uid: string): Promise<{ projectsData: string[] }> => {
+export const getAllProjectsForUser = async (uid: string): Promise<string[]> => {
   return await asyncGetRequest(
     `${fetchEnvVar("API_ENDPOINT")}/getAllProjectsForUser?uid=${uid}`
   )
     .then((response) => {
-      return response.data;
+      return response.data.projectsData;
     })
     .catch((error) => {
       console.log(error.message);
