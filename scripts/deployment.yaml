@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: projects-scanner
+spec:
+  selector:
+    matchLabels:
+      app: projects-scanner
+  template:
+    metadata:
+      labels:
+        app: projects-scanner
+    spec:
+      volumes:
+      - name: google-cloud-key
+        secret:
+          secretName: pubsub-serviceaccount-key
+      containers:
+      - name: projects-scanner
+        image: eu.gcr.io/bu-fyp-s5008913/projects-scanner@sha256:f7eaa3ef902bd6c3839962f6ef2b582a09b4f342b14ef39c64826365f4d0b4de
+        volumeMounts:
+        - name: google-cloud-key
+          mountPath: /var/secrets/google
+        env:
+        - name: RUN_DELAY_SECONDS
+          valueFrom:
+            configMapKeyRef:
+              key: RUN_DELAY_SECONDS
+              name: projects-scanner-config
+        - name: PUBSUB_TOPIC_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: PUBSUB_TOPIC_NAME
+              name: projects-scanner-config
+        - name: API_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              key: API_ENDPOINT
+              name: projects-scanner-config
+        - name: API_KEY
+          valueFrom:
+            configMapKeyRef:
+              key: API_KEY
+              name: projects-scanner-config
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/key.json
