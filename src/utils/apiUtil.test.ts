@@ -50,8 +50,8 @@ describe("asyncPutRequest", () => {
   });
 });
 
-describe("getAllProjectIds", () => {
-  test("returns a list of project IDs", async () => {
+describe("getAllUserIds", () => {
+  test("returns a list of user IDs", async () => {
     mockedAxios.get.mockImplementation(() =>
       Promise.resolve({
         data: {
@@ -68,6 +68,29 @@ describe("getAllProjectIds", () => {
     mockedAxios.get.mockImplementation(() => Promise.reject("Server error"));
 
     await apiHelper.getAllUserIds().catch((error) =>
+      expect(error).toMatchObject(new Error("Server error"))
+    );
+  });
+});
+
+describe("getAllProjectsForUser", () => {
+  test("returns an array of projects", async () => {
+    mockedAxios.get.mockImplementation(() =>
+      Promise.resolve({
+        data: {
+          projectsData: [{a: "123", b: "456"}, {a: "123", b: "456"}],
+        },
+      })
+    );
+
+    const data = await apiHelper.getAllProjectsForUser("fakeUid");
+    expect(data).toEqual({ projectsData: [{a: "123", b: "456"}, {a: "123", b: "456"}] });
+  });
+
+  test("throws an error when there is an issue getting the IDs", async () => {
+    mockedAxios.get.mockImplementation(() => Promise.reject("Server error"));
+
+    await apiHelper.getAllProjectsForUser("fakeUid").catch((error) =>
       expect(error).toMatchObject(new Error("Server error"))
     );
   });

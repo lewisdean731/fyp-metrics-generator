@@ -40,6 +40,19 @@ export const getAllUserIds = async (): Promise<{ userIds: string[] }> => {
     });
 };
 
+export const getAllProjectsForUser = async (uid: string): Promise<{ projectsData: string[] }> => {
+  return await asyncGetRequest(
+    `${fetchEnvVar("API_ENDPOINT")}/getAllProjectsForUser?uid=${uid}`
+  )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      console.log(error.message);
+      throw new Error(error);
+    });
+};
+
 export const createMetricEntry = async (
   uid: string, 
   metricName: string,
