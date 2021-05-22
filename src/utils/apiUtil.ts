@@ -40,7 +40,7 @@ export const getAllUserIds = async (): Promise<string[]> => {
     });
 };
 
-export const getAllProjectsForUser = async (uid: string): Promise<string[]> => {
+export const getAllProjectsForUser = async (uid: string): Promise<Project[]> => {
   return await asyncGetRequest(
     `${fetchEnvVar("API_ENDPOINT")}/getAllProjectsForUser?uid=${uid}`
   )
