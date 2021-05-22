@@ -40,4 +40,20 @@ export const getAllProjectIds = async (): Promise<{ projectIds: string[] }> => {
     });
 };
 
+export const createMetricEntry = async (
+  uid: string, 
+  metricName: string,
+  timestamp: number, 
+  value: number
+): Promise<AxiosResponse> => {
+  return await asyncPutRequest(
+    `${fetchEnvVar("API_ENDPOINT")}/metric/${uid}`,
+    {
+      metricName: metricName,
+      timestamp: timestamp,
+      value: value
+    }
+  )
+}
+
 export default getAllProjectIds;
