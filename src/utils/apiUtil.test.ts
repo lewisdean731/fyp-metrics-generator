@@ -61,7 +61,7 @@ describe("getAllUserIds", () => {
     );
 
     const data = await apiHelper.getAllUserIds();
-    expect(data).toEqual({ userIds: ["1234", "5678"] });
+    expect(data).toEqual(["1234", "5678"]);
   });
 
   test("throws an error when there is an issue getting the IDs", async () => {
@@ -84,7 +84,7 @@ describe("getAllProjectsForUser", () => {
     );
 
     const data = await apiHelper.getAllProjectsForUser("fakeUid");
-    expect(data).toEqual({ projectsData: [{a: "123", b: "456"}, {a: "123", b: "456"}] });
+    expect(data).toEqual([{a: "123", b: "456"}, {a: "123", b: "456"}]);
   });
 
   test("throws an error when there is an issue getting the IDs", async () => {
