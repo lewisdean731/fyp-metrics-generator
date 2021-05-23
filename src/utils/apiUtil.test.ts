@@ -50,6 +50,30 @@ describe("asyncPutRequest", () => {
   });
 });
 
+describe("asyncPostRequest", () => {
+  test("returns a 200 when authorised", async () => {
+    mockedAxios.post.mockImplementation(() =>
+      Promise.resolve({
+        status: 200,
+      })
+    );
+
+    await apiHelper
+      .asyncPostRequest("fakeUrl", {})
+      .then((response) => expect(response.status).toEqual(200));
+  });
+
+  test("returns a 401 error when unauthorised", async () => {
+    mockedAxios.post.mockImplementation(() =>
+      Promise.reject("401 unauthorised")
+    );
+
+    await apiHelper
+      .asyncPostRequest("fakeUrl", {})
+      .catch((error) => expect(error).toEqual("401 unauthorised"));
+  });
+});
+
 describe("getAllUserIds", () => {
   test("returns a list of user IDs", async () => {
     mockedAxios.get.mockImplementation(() =>

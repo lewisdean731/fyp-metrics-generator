@@ -28,6 +28,21 @@ export const asyncPutRequest = async (
     });
 };
 
+export const asyncPostRequest = async (
+  url: string,
+  data: object
+): Promise<AxiosResponse> => {
+  console.log(`POST ${url}`);
+  return await axios
+    .post(url, data, { params: { apiKey: fetchEnvVar("API_KEY") } })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 export const getAllUserIds = async (): Promise<string[]> => {
   return await asyncGetRequest(
     `${fetchEnvVar("API_ENDPOINT")}/getAllUserIds`
