@@ -17,7 +17,7 @@ spec:
           secretName: pubsub-serviceaccount-key
       containers:
       - name: metrics-generator
-        image: eu.gcr.io/bu-fyp-s5008913/metrics-generator@sha256:4b4942bfc64e42a698f38b97abca8d7bed5bc1fe23ad86e21bfa2d673f390f80
+        image: eu.gcr.io/bu-fyp-s5008913/metrics-generator@sha256:1d1eb849413a9c6cf4720b5a86dc9aa2af5064e49031b62eff45335ebdf9f204
         volumeMounts:
         - name: google-cloud-key
           mountPath: /var/secrets/google
