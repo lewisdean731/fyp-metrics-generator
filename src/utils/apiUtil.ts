@@ -28,10 +28,23 @@ export const asyncPutRequest = async (
     });
 };
 
+export const asyncPostRequest = async (
+  url: string,
+  data: object
+): Promise<AxiosResponse> => {
+  console.log(`POST ${url}`);
+  return await axios
+    .post(url, data, { params: { apiKey: fetchEnvVar("API_KEY") } })
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 export const getAllUserIds = async (): Promise<string[]> => {
-  return await asyncGetRequest(
-    `${fetchEnvVar("API_ENDPOINT")}/getAllUserIds`
-  )
+  return await asyncGetRequest(`${fetchEnvVar("API_ENDPOINT")}/getAllUserIds`)
     .then((response) => {
       return response.data.userIds;
     })
@@ -41,7 +54,9 @@ export const getAllUserIds = async (): Promise<string[]> => {
     });
 };
 
-export const getAllProjectsForUser = async (uid: string): Promise<Project[]> => {
+export const getAllProjectsForUser = async (
+  uid: string
+): Promise<Project[]> => {
   return await asyncGetRequest(
     `${fetchEnvVar("API_ENDPOINT")}/getAllProjectsForUser?uid=${uid}`
   )
@@ -55,17 +70,24 @@ export const getAllProjectsForUser = async (uid: string): Promise<Project[]> => 
 };
 
 export const createMetricEntry = async (
-  uid: string, 
+  uid: string,
   metricName: string,
-  timestamp: number, 
+  timestamp: number,
   value: number
 ): Promise<AxiosResponse> => {
-  return await asyncPutRequest(
+  return await asyncPutRequest(`${fetchEnvVar("API_ENDPOINT")}/metric/${uid}`, {
+    metricName: metricName,
+    timestamp: timestamp,
+    value: value,
+  });
+};
+
+export const updateMetrics = async (
+  uid: string,
+  metricsData: object
+): Promise<AxiosResponse> => {
+  return await asyncPostRequest(
     `${fetchEnvVar("API_ENDPOINT")}/metric/${uid}`,
-    {
-      metricName: metricName,
-      timestamp: timestamp,
-      value: value
-    }
-  )
-}
+    metricsData
+  );
+};

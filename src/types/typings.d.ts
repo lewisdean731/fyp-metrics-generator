@@ -1,7 +1,7 @@
 type Project = {
   projectDependencies: {
     directDependencies: dependency[];
-  }
+  };
   yellowWarningPeriod: number;
   redWarningPeriod: number;
 };

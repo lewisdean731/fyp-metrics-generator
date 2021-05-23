@@ -41,38 +41,76 @@ const toVersionIntArray = (version: string): number[] => {
 
 (async () => {
   while (true) {
-
     // Get all users then for each one
-    const userIds: string[] = await apiUtil.getAllUserIds()
-    userIds.forEach(async(uid) => {
+    const userIds: string[] = await apiUtil.getAllUserIds();
+    userIds.forEach(async (uid) => {
       let totalDependencies: number = 0;
       let greenDependencies: number = 0;
       let yellowDependencies: number = 0;
       let redDependencies: number = 0;
 
-      // Get all projects for user then for each one
-      const projects: Project[] = await apiUtil.getAllProjectsForUser(uid)
+      let totalProjects: number = 0;
+      let greenProjects: number = 0;
+      let yellowProjects: number = 0;
+      let redProjects: number = 0;
+
+      // Get all projects
+      const projects: Project[] = await apiUtil.getAllProjectsForUser(uid);
+
+      // Tally up total projects
+      totalProjects = projects.length;
+
       projects.forEach((project) => {
+        let projTotalDeps: number = 0;
+        let projGreenDeps: number = 0;
+        let projYellowDeps: number = 0;
+        let projRedDeps: number = 0;
+
         project.projectDependencies.directDependencies.forEach((dependency) => {
           // Add dependencies to total / green / yellow / red tallies
           const dateDiff = howOutOfDate(dependency.next_release_date);
-          
+
           totalDependencies++;
+          projTotalDeps++;
 
           switch (true) {
             case isUsingLatestVersion(dependency):
               greenDependencies++;
+              projGreenDeps++;
               break;
             case dateDiff > project.redWarningPeriod:
               redDependencies++;
+              projRedDeps++;
               break;
             case dateDiff > project.yellowWarningPeriod:
               yellowDependencies++;
-          };
+              projYellowDeps++;
+          }
         });
+
+        if (projTotalDeps > 0) {
+          switch (true) {
+            case projRedDeps > 0:
+              redProjects++;
+              break;
+            case projYellowDeps > 0:
+              yellowProjects++;
+              break;
+            case projGreenDeps > 0:
+              greenProjects++;
+          }
+        } else {
+          greenProjects++;
+        }
       });
       // update metrics with tally amounts
-      console.log(`Updating metrics for user ${uid}`)
+      console.log(`Updating metrics for user ${uid}`);
+      await apiUtil.updateMetrics(uid, {
+        totalProjects: totalProjects,
+        greenProjects: greenProjects,
+        yellowProjects: yellowProjects,
+        redProjects: redProjects,
+      });
       await apiUtil.createMetricEntry(
         uid, 
         "totalDependencies",
@@ -98,7 +136,7 @@ const toVersionIntArray = (version: string): number[] => {
         redDependencies
       )
     });
-    
+
     // wait x seconds
     await delay(RUN_DELAY_SECONDS);
   }
