@@ -111,7 +111,7 @@ const toVersionIntArray = (version: string): number[] => {
         yellowProjects: yellowProjects,
         redProjects: redProjects,
       });
-      /*       await apiUtil.createMetricEntry(
+      await apiUtil.createMetricEntry(
         uid, 
         "totalDependencies",
         new Date().getTime(),
@@ -134,7 +134,7 @@ const toVersionIntArray = (version: string): number[] => {
         "redDependencies",
         new Date().getTime(),
         redDependencies
-      ) */
+      )
     });
 
     // wait x seconds
