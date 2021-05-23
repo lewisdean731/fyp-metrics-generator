@@ -17,6 +17,7 @@ export const asyncPutRequest = async (
   url: string,
   data: object
 ): Promise<AxiosResponse> => {
+  console.log(`PUT ${url}`);
   return await axios
     .put(url, data, { params: { apiKey: fetchEnvVar("API_KEY") } })
     .then((response) => {

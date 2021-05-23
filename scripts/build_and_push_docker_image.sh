@@ -35,11 +35,11 @@ then
             exit 1 )
 fi
 
-docker image build . --no-cache -t "$(whoami)/projects-scanner:$version"
+docker image build . --no-cache -t "$(whoami)/metrics-generator:$version"
 
 if [ -n "${TAG_AND_PUSH}" ]
 then
     echo "Tagging for production and saving"
-    docker image tag "$(whoami)/projects-scanner:$version" "eu.gcr.io/bu-fyp-s5008913/projects-scanner:$version"
-    docker push "eu.gcr.io/bu-fyp-s5008913/projects-scanner:$version"
+    docker image tag "$(whoami)/metrics-generator:$version" "eu.gcr.io/bu-fyp-s5008913/metrics-generator:$version"
+    docker push "eu.gcr.io/bu-fyp-s5008913/metrics-generator:$version"
 fi
