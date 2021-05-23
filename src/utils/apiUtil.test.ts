@@ -15,9 +15,9 @@ describe("asyncGetRequest", () => {
       })
     );
 
-    await apiHelper.asyncGetRequest("fakeUrl").then((response) =>
-      expect(response.status).toEqual(200)
-    );
+    await apiHelper
+      .asyncGetRequest("fakeUrl")
+      .then((response) => expect(response.status).toEqual(200));
   });
 
   test("returns a 401 when unauthorised", async () => {
@@ -27,9 +27,9 @@ describe("asyncGetRequest", () => {
       })
     );
 
-    await apiHelper.asyncGetRequest("fakeUrl").catch((error) =>
-      expect(error.status).toEqual(401)
-    );
+    await apiHelper
+      .asyncGetRequest("fakeUrl")
+      .catch((error) => expect(error.status).toEqual(401));
   });
 });
 
@@ -91,9 +91,9 @@ describe("getAllUserIds", () => {
   test("throws an error when there is an issue getting the IDs", async () => {
     mockedAxios.get.mockImplementation(() => Promise.reject("Server error"));
 
-    await apiHelper.getAllUserIds().catch((error) =>
-      expect(error).toMatchObject(new Error("Server error"))
-    );
+    await apiHelper
+      .getAllUserIds()
+      .catch((error) => expect(error).toMatchObject(new Error("Server error")));
   });
 });
 
@@ -102,21 +102,27 @@ describe("getAllProjectsForUser", () => {
     mockedAxios.get.mockImplementation(() =>
       Promise.resolve({
         data: {
-          projectsData: [{a: "123", b: "456"}, {a: "123", b: "456"}],
+          projectsData: [
+            { a: "123", b: "456" },
+            { a: "123", b: "456" },
+          ],
         },
       })
     );
 
     const data = await apiHelper.getAllProjectsForUser("fakeUid");
-    expect(data).toEqual([{a: "123", b: "456"}, {a: "123", b: "456"}]);
+    expect(data).toEqual([
+      { a: "123", b: "456" },
+      { a: "123", b: "456" },
+    ]);
   });
 
   test("throws an error when there is an issue getting the IDs", async () => {
     mockedAxios.get.mockImplementation(() => Promise.reject("Server error"));
 
-    await apiHelper.getAllProjectsForUser("fakeUid").catch((error) =>
-      expect(error).toMatchObject(new Error("Server error"))
-    );
+    await apiHelper
+      .getAllProjectsForUser("fakeUid")
+      .catch((error) => expect(error).toMatchObject(new Error("Server error")));
   });
 });
 
@@ -128,7 +134,8 @@ describe("createMetricEntry", () => {
       })
     );
 
-    await apiHelper.createMetricEntry("uid", "metricA", 0, 0)
+    await apiHelper
+      .createMetricEntry("uid", "metricA", 0, 0)
       .then((response) => expect(response.status).toBe(200));
   });
 
@@ -140,8 +147,7 @@ describe("createMetricEntry", () => {
       })
     );
 
-    await apiHelper.createMetricEntry("uid", "metricA", 0, 0)
-    .catch((error) => {
+    await apiHelper.createMetricEntry("uid", "metricA", 0, 0).catch((error) => {
       expect(error.status).toBe(500);
       expect(error.message).toBe("example error occured");
     });
