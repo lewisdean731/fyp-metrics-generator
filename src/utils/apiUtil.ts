@@ -83,4 +83,14 @@ export const createMetricEntry = async (
       value: value
     }
   )
-}
+};
+
+export const updateMetrics = async (
+  uid: string, 
+  metricsData: object,
+): Promise<AxiosResponse> => {
+  return await asyncPostRequest(
+    `${fetchEnvVar("API_ENDPOINT")}/metric/${uid}`,
+    metricsData
+  )
+};
